@@ -28,28 +28,68 @@ The main contributions of this repository are:
 - Explainability support for visual interpretation of model predictions.
 - Experimental scripts for comparing SSL-based training with conventional supervised learning.
 
-## Repository Structure
+## Dataset Organization
+If a multi-class tumor classification setting is used, the dataset can be organized as:
+dataset/
+├── train/
+│   ├── glioma/
+│   ├── meningioma/
+│   ├── pituitary/
+│   └── no_tumor/
+├── val/
+│   ├── glioma/
+│   ├── meningioma/
+│   ├── pituitary/
+│   └── no_tumor/
+└── test/
+    ├── glioma/
+    ├── meningioma/
+    ├── pituitary/
+    └── no_tumor/
 
-```text
-Brain-Tumor-Detection-SSL/
-├── configs/
-│   └── config.yaml
-├── data/
-│   └── README.md
-├── models/
-│   ├── vit_model.py
-│   └── ssl_backbone.py
-├── scripts/
-│   ├── train_ssl.py
-│   ├── train_classifier.py
-│   ├── evaluate.py
-│   └── explain.py
-├── utils/
-│   ├── dataset.py
-│   ├── metrics.py
-│   └── visualization.py
-├── results/
-│   └── README.md
-├── requirements.txt
-├── LICENSE
-└── README.md
+For self-supervised pretraining, class labels are not required. The unlabeled dataset can be organized as:
+dataset_ssl/
+└── unlabeled/
+    ├── image_001.png
+    ├── image_002.png
+    ├── image_003.png
+    └── ...
+
+##  Installation
+Clone the repository: git clone https://github.com/your-username/Brain-Tumor-Detection-SSL.git
+cd Brain-Tumor-Detection-SSL
+python -m venv venv
+source venv/bin/activate
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+##  Self-Supervised Pretraining
+python run_mae_pretraining.py \
+        --data_path ${DATA_PATH} \
+        --mask_ratio 0.75 \
+        --batch_size 6\
+        --opt adamw \
+	    	--model pretrain_mae_base_patch8_224 \
+        --opt_betas 0.9 0.95 \
+        --warmup_epochs 40 \
+        --epochs 710  \
+		    --input_size 224 \
+		    --log_dir ${BoardDir} \
+        --output_dir ${OUTPUT_DIR}
+## Supervised Fine-Tuning
+python run_class_finetuning.py \
+        --model vit_base_patch8_224 \
+        --data_path ${DATA_PATH} \
+        --finetune ${MODEL_PATH} \
+        --output_dir ${OUTPUT_DIR} \
+        --batch_size 6 \
+        --opt adamw \
+        --opt_betas 0.9 0.999 \
+        --weight_decay 0.05 \
+        --epochs 150 \
+        --nb_classes 4 \
+        --dist_eval
+
+## License
+This project is released under the MIT License. See the LICENSE file for more details.
