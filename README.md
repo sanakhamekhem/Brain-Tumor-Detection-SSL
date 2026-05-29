@@ -167,6 +167,7 @@ Grad-CAM visualizations help assess whether the model focuses on clinically mean
 This project is released under the MIT License. See the `LICENSE` file for more details.
 
 ## Citation
+```text
 @software{khamekhem2026ssl_btd,
   author    = {Khamekhem Jemni, Sana},
   title     = {SSL-BTD: A Self-Supervised Vision Transformer Framework
@@ -178,3 +179,4 @@ This project is released under the MIT License. See the `LICENSE` file for more 
   doi       = {10.5281/zenodo.20443318},
   url       = {https://doi.org/10.5281/zenodo.20443318}
 }
+```
