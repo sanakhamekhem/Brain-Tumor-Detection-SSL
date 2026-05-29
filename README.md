@@ -4,9 +4,12 @@ Official implementation of the paper:
 
 **SSL-BTD: A Self-Supervised Vision Transformer Framework for Explainable Brain Tumor Detection and Classification from MRI**
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20443318.svg)](https://doi.org/10.5281/zenodo.20443318)
 
 This repository provides the source code, configuration files, and experimental protocol for a self-supervised deep learning framework dedicated to brain tumor detection from medical images. The proposed approach leverages self-supervised representation learning to improve feature extraction, classification performance, and model generalization under limited labeled data conditions.
+
+## DOI
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20443318.svg)](https://doi.org/10.5281/zenodo.20443318)
+
 
 ## Overview
 
