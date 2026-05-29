@@ -92,33 +92,51 @@ Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+## Self-Supervised Pretraining
 
-##  Self-Supervised Pretraining
+Run the self-supervised MAE pretraining stage using the following command:
+
+```bash
 python run_mae_pretraining.py \
-        --data_path ${DATA_PATH} \
-        --mask_ratio 0.75 \
-        --batch_size 6\
-        --opt adamw \
-	    	--model pretrain_mae_base_patch8_224 \
-        --opt_betas 0.9 0.95 \
-        --warmup_epochs 40 \
-        --epochs 710  \
-		    --input_size 224 \
-		    --log_dir ${BoardDir} \
-        --output_dir ${OUTPUT_DIR}
+  --data_path ${DATA_PATH} \
+  --mask_ratio 0.75 \
+  --batch_size 6 \
+  --opt adamw \
+  --model pretrain_mae_base_patch8_224 \
+  --opt_betas 0.9 0.95 \
+  --warmup_epochs 40 \
+  --epochs 710 \
+  --input_size 224 \
+  --log_dir ${BoardDir} \
+  --output_dir ${OUTPUT_DIR}
+```
+
+This stage learns visual representations from unlabeled brain MRI images using a masked autoencoding objective. The resulting pretrained weights are then used to initialize the supervised fine-tuning stage.
+
+---
+
 ## Supervised Fine-Tuning
+
+Run the supervised fine-tuning stage using the following command:
+
+```bash
 python run_class_finetuning.py \
-        --model vit_base_patch8_224 \
-        --data_path ${DATA_PATH} \
-        --finetune ${MODEL_PATH} \
-        --output_dir ${OUTPUT_DIR} \
-        --batch_size 6 \
-        --opt adamw \
-        --opt_betas 0.9 0.999 \
-        --weight_decay 0.05 \
-        --epochs 150 \
-        --nb_classes 4 \
-        --dist_eval
+  --model vit_base_patch8_224 \
+  --data_path ${DATA_PATH} \
+  --finetune ${MODEL_PATH} \
+  --output_dir ${OUTPUT_DIR} \
+  --batch_size 6 \
+  --opt adamw \
+  --opt_betas 0.9 0.999 \
+  --weight_decay 0.05 \
+  --epochs 150 \
+  --nb_classes 4 \
+  --dist_eval
+```
+
+This stage fine-tunes the pretrained Vision Transformer on the labeled brain tumor classification dataset. The option `--nb_classes 4` corresponds to the four target classes: `glioma`, `meningioma`, `pituitary`, and `no_tumor`.
+
+---
 
 ## License
-This project is released under the MIT License. See the LICENSE file for more details.
+
