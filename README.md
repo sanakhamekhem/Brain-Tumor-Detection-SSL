@@ -137,6 +137,27 @@ python run_class_finetuning.py \
 This stage fine-tunes the pretrained Vision Transformer on the labeled brain tumor classification dataset. The option `--nb_classes 4` corresponds to the four target classes: `glioma`, `meningioma`, `pituitary`, and `no_tumor`.
 
 ---
+## Explainability with Grad-CAM
+
+Grad-CAM is used to visualize the image regions that contribute most to the model prediction. In this project, it provides qualitative interpretability for the Vision Transformer-based brain tumor classifier by highlighting discriminative regions in MRI images.
+
+```bash
+python grad.py \
+  --image_path /path/to/example_image.jpg \
+  --checkpoint /path/to/checkpoint.pth \
+  --output_dir results/explainability
+```
+
+The resulting heatmaps are saved in:
+
+```text
+results/explainability/
+```
+
+Grad-CAM visualizations help assess whether the model focuses on clinically meaningful tumor-related areas rather than irrelevant background regions. These visual explanations support the transparency and interpretability of the proposed self-supervised brain tumor detection framework.
+
 
 ## License
+
+This project is released under the MIT License. See the `LICENSE` file for more details.
 
