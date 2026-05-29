@@ -1,8 +1,8 @@
-# Brain Tumor Detection SSL
+# Brain Tumor Detection Using SSL-ViT
 
 Official implementation of the paper:
 
-**Self-Supervised Vision Transformer for Accurate and Explainable Brain Tumor Detection**
+**SSL-BTD: A Self-Supervised Vision Transformer Framework for Explainable Brain Tumor Detection and Classification from MRI**
 
 This repository provides the source code, configuration files, and experimental protocol for a self-supervised deep learning framework dedicated to brain tumor detection from medical images. The proposed approach leverages self-supervised representation learning to improve feature extraction, classification performance, and model generalization under limited labeled data conditions.
 
