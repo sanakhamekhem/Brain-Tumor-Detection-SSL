@@ -1,105 +1,55 @@
-# Unofficial PyTorch implementation of [Masked Autoencoders Are Scalable Vision Learners](https://arxiv.org/abs/2111.06377)
+# Brain Tumor Detection SSL
 
-This repository is built upon [BEiT](https://github.com/microsoft/unilm/tree/master/beit), thanks very much!
+Official implementation of the paper:
 
+**Self-Supervised Vision Transformer for Accurate and Explainable Brain Tumor Detection**
 
-Now, we implement the pretrain and finetune process according to the paper, but still **can't guarantee** the performance reported in the paper can be reproduced! 
+This repository provides the source code, configuration files, and experimental protocol for a self-supervised deep learning framework dedicated to brain tumor detection from medical images. The proposed approach leverages self-supervised representation learning to improve feature extraction, classification performance, and model generalization under limited labeled data conditions.
 
-## Difference
+## Overview
 
-### `shuffle` and `unshuffle`
+Brain tumor detection from medical images is a challenging task due to visual variability, limited annotated data, and subtle differences between pathological and non-pathological regions. This project investigates the use of self-supervised learning (SSL) with Vision Transformer-based architectures to learn robust visual representations before supervised fine-tuning.
 
-`shuffle` and `unshuffle` operations don't seem to be directly accessible in pytorch, so we use another method to realize this process:
-+ For `shuffle`, we use the method of randomly generating mask-map (14x14) in BEiT, where `mask=0` illustrates keeping the token, `mask=1` denotes dropping the token (not participating caculation in encoder). Then all visible tokens (`mask=0`) are fed into encoder network.
-+ For `unshuffle`, we get the postion embeddings (with adding the shared mask token) of all masked tokens according to the mask-map and then concate them with the visible tokens (from encoder), and feed them into the decoder network to recontrust.
+The framework is designed to support:
 
-### sine-cosine positional embeddings
+- Self-supervised pretraining on unlabeled medical images.
+- Supervised fine-tuning for brain tumor classification.
+- Evaluation using standard classification metrics.
+- Explainability analysis to visualize discriminative image regions.
+- Reproducible experimentation through configuration files and documented scripts.
 
-The positional embeddings mentioned in the paper are `sine-cosine` version. And we adopt the implemention of [here](https://github.com/jadore801120/attention-is-all-you-need-pytorch/blob/master/transformer/Models.py#L31), but it seems like a 1-D embeddings not 2-D's. So we don't know what effect it will bring.
-And I find the 2D's sine-cosine positional embeddings in [MoCoV3](https://github.com/facebookresearch/moco-v3/blob/c349e6e24f40d3fedb22d973f92defa4cedf37a7/vits.py?_pjax=%23js-repo-pjax-container%2C%20div%5Bitemtype%3D%22http%3A%2F%2Fschema.org%2FSoftwareSourceCode%22%5D%20main%2C%20%5Bdata-pjax-container%5D#L53). If someone is interested, you can try it.
+## Main Contributions
 
+The main contributions of this repository are:
 
-## TODO
-- [x] implement the finetune process
-- [ ] reuse the model in `modeling_pretrain.py`
-- [x] caculate the normalized pixels target
-- [ ] add the `cls` token in the encoder
-- [x] visualization of reconstruction image
-- [ ] knn and linear prob
-- [ ] ...
+- A self-supervised learning pipeline for medical image representation learning.
+- A Vision Transformer-based classification framework for brain tumor detection.
+- A reproducible training and evaluation protocol.
+- Explainability support for visual interpretation of model predictions.
+- Experimental scripts for comparing SSL-based training with conventional supervised learning.
 
-## Setup
+## Repository Structure
 
-```
-pip install -r requirements.txt
-```
-
-## Run
-1. Pretrain
-```bash
-# Set the path to save checkpoints
-OUTPUT_DIR='output/pretrain_mae_base_patch16_224'
-# path to imagenet-1k train set
-DATA_PATH='/path/to/ImageNet_ILSVRC2012/train'
-
-
-# batch_size can be adjusted according to the graphics card
-OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=8 run_mae_pretraining.py \
-        --data_path ${DATA_PATH} \
-        --mask_ratio 0.75 \
-        --model pretrain_mae_base_patch16_224 \
-        --batch_size 128 \
-        --opt adamw \
-        --opt_betas 0.9 0.95 \
-        --warmup_epochs 40 \
-        --epochs 1600 \
-        --output_dir ${OUTPUT_DIR}
-```
-
-2. Finetune
-```bash
-# Set the path to save checkpoints
-OUTPUT_DIR='output/'
-# path to imagenet-1k set
-DATA_PATH='/path/to/ImageNet_ILSVRC2012'
-# path to pretrain model
-MODEL_PATH='/path/to/pretrain/checkpoint.pth'
-
-# batch_size can be adjusted according to the graphics card
-OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=8 run_class_finetuning.py \
-    --model vit_base_patch16_224 \
-    --data_path ${DATA_PATH} \
-    --finetune ${MODEL_PATH} \
-    --output_dir ${OUTPUT_DIR} \
-    --batch_size 128 \
-    --opt adamw \
-    --opt_betas 0.9 0.999 \
-    --weight_decay 0.05 \
-    --epochs 100 \
-    --dist_eval
-```
-3. Visualization of reconstruction
-```bash
-# Set the path to save images
-OUTPUT_DIR='output/'
-# path to image for visualization
-IMAGE_PATH='files/ILSVRC2012_val_00031649.JPEG'
-# path to pretrain model
-MODEL_PATH='/path/to/pretrain/checkpoint.pth'
-
-# Now, it only supports pretrained models with normalized pixel targets
-python run_mae_vis.py ${IMAGE_PATH} ${OUTPUT_DIR} ${MODEL_PATH}
-```
-
-## Result
-
-|   model  | pretrain | finetune | accuracy | log | weight |
-|:--------:|:--------:|:--------:|:--------:| :--------:|:--------:|
-| vit-base |   400e   |   100e   |   83.1%  | [pretrain](files/pretrain_base_0.75_400e.txt) [finetune](files/pretrain_base_0.75_400e_finetune_100e.txt)| [Google drive](https://drive.google.com/drive/folders/182F5SLwJnGVngkzguTelja4PztYLTXfa?usp=sharing) [BaiduYun](https://pan.baidu.com/s/1F0u9WeckZMbNk095gUxT1g)(code: mae6)|
-| vit-large | 400e | 50e | 84.5% | [pretrain](files/pretrain_large_0.75_400e.txt) [finetune](files/pretrain_large_0.75_400e_finetune_50e.txt) | unavailable |
-
-Due to the limited gpus, it's really a chanllenge for us to pretrain with larger model or longer schedule mentioned in the paper. (the pretraining and end-to-end fine-tuning process of vit-large model are fininshed by [this enthusiastic handsome guy](https://github.com/sunsmarterjie) with many v100s, but the weights are unavailable)
-
-So if one can fininsh it, please feel free to report it in the issue or push a PR, thank you!
-
-And your star is my motivation, thank u~
+```text
+Brain-Tumor-Detection-SSL/
+├── configs/
+│   └── config.yaml
+├── data/
+│   └── README.md
+├── models/
+│   ├── vit_model.py
+│   └── ssl_backbone.py
+├── scripts/
+│   ├── train_ssl.py
+│   ├── train_classifier.py
+│   ├── evaluate.py
+│   └── explain.py
+├── utils/
+│   ├── dataset.py
+│   ├── metrics.py
+│   └── visualization.py
+├── results/
+│   └── README.md
+├── requirements.txt
+├── LICENSE
+└── README.md
