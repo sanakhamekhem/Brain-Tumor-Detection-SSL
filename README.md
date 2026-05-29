@@ -166,3 +166,15 @@ Grad-CAM visualizations help assess whether the model focuses on clinically mean
 
 This project is released under the MIT License. See the `LICENSE` file for more details.
 
+## Citation
+@software{khamekhem2026ssl_btd,
+  author    = {Khamekhem Jemni, Sana},
+  title     = {SSL-BTD: A Self-Supervised Vision Transformer Framework
+               for Explainable Brain Tumor Detection and Classification
+               from MRI},
+  year      = {2026},
+  publisher = {Zenodo},
+  note      = {Manuscript submitted to The Visual Computer},
+  doi       = {10.5281/zenodo.20443318},
+  url       = {https://doi.org/10.5281/zenodo.20443318}
+}
