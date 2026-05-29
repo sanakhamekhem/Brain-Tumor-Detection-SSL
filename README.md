@@ -29,7 +29,10 @@ The main contributions of this repository are:
 - Experimental scripts for comparing SSL-based training with conventional supervised learning.
 
 ## Dataset Organization
-If a multi-class tumor classification setting is used, the dataset can be organized as:
+
+If a multi-class tumor classification setting is used, the dataset can be organized as follows:
+
+```text
 dataset/
 ├── train/
 │   ├── glioma/
@@ -46,23 +49,49 @@ dataset/
     ├── meningioma/
     ├── pituitary/
     └── no_tumor/
+```
 
-For self-supervised pretraining, class labels are not required. The unlabeled dataset can be organized as:
+For self-supervised pretraining, class labels are not required. The unlabeled dataset can be organized as follows:
+
+```text
 dataset_ssl/
 └── unlabeled/
     ├── image_001.png
     ├── image_002.png
     ├── image_003.png
     └── ...
+```
 
-##  Installation
-Clone the repository: git clone https://github.com/your-username/Brain-Tumor-Detection-SSL.git
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/Brain-Tumor-Detection-SSL.git
 cd Brain-Tumor-Detection-SSL
+```
+
+Create and activate a virtual environment.
+
+For Linux/macOS:
+
+```bash
 python -m venv venv
 source venv/bin/activate
+```
+
+For Windows:
+
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
+
+Install the required dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
 ##  Self-Supervised Pretraining
 python run_mae_pretraining.py \
