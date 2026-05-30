@@ -169,7 +169,7 @@ This project is released under the MIT License. See the `LICENSE` file for more 
 ## Citation
 ```text
 @software{khamekhem2026ssl_btd,
-  author    = {Khamekhem Jemni, Sana},
+  author    = {Bidine Limeme, Sana Khamekhem Jemni, Sourour Ammar, Yousri Kessentini},
   title     = {SSL-BTD: A Self-Supervised Vision Transformer Framework
                for Explainable Brain Tumor Detection and Classification
                from MRI},
